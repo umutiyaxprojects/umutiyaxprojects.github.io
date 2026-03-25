@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iOS 10 Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>iOS 10.3.4 Simulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.cdnfonts.com/css/sf-pro-display');
 
         :root {
             --ios-blur: blur(25px) saturate(180%);
-            --ios-bg: rgba(255, 255, 255, 0.6);
+            --ios-bg: rgba(255, 255, 255, 0.65);
+            --app-transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body, html {
@@ -25,42 +26,45 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* 10.3.4 GPS Fix Context Wallpaper */
         .phone-wrapper {
             width: 100%;
             height: 100%;
             position: relative;
             background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.6s ease;
+            z-index: 1;
         }
 
-        /* Springboard blur when app opens */
         .phone-wrapper.app-open {
-            transform: scale(1.1);
-            filter: blur(10px);
+            transform: scale(1.15);
+            filter: blur(15px) brightness(0.8);
         }
 
+        /* Status Bar - iOS 10 Style */
         .status-bar {
             height: 24px;
-            padding: 0 16px;
+            padding: 0 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 500;
             z-index: 2000;
             position: absolute;
             top: 0;
             width: 100%;
+            background: rgba(0,0,0,0.1);
         }
 
-        /* App Grid */
+        /* Springboard Grid */
         .app-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 25px 15px;
-            padding: 40px 20px;
+            padding: 40px 18px;
         }
 
         .app-container {
@@ -68,30 +72,36 @@
             flex-direction: column;
             align-items: center;
             cursor: pointer;
+            transition: opacity 0.2s;
         }
 
+        .app-container:active {
+            opacity: 0.6;
+        }
+
+        /* iOS 10 Icon Specs: 14pt radius */
         .icon {
-            width: 60px;
-            height: 60px;
+            width: 62px;
+            height: 62px;
             border-radius: 14px;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.1s;
+            overflow: hidden;
         }
-
-        .icon:active { transform: scale(0.9); }
 
         .icon-label {
             color: white;
             font-size: 11px;
-            margin-top: 6px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            font-weight: 400;
+            margin-top: 5px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            letter-spacing: -0.2px;
         }
 
-        /* SVG Icons with iOS 10 Gradients */
+        /* Safari 10.0 / WebKit 602.1 Gradient Standards */
         .icon-messages { background: linear-gradient(180deg, #62ef7d 0%, #4cd964 100%); }
         .icon-mail { background: linear-gradient(180deg, #57d9ff 0%, #1d71f2 100%); }
         .icon-music { background: linear-gradient(180deg, #ff5e7d 0%, #ff2d55 100%); }
@@ -101,57 +111,63 @@
         .icon-phone { background: linear-gradient(180deg, #62ef7d 0%, #4cd964 100%); }
         .icon-fullscreen { background: linear-gradient(180deg, #5ac8fa 0%, #007aff 100%); }
 
-        /* Dock */
+        /* iOS 10 Glass Dock */
         .dock {
             position: absolute;
-            bottom: 20px;
-            left: 10px;
-            right: 10px;
-            height: 90px;
+            bottom: 12px;
+            left: 8px;
+            right: 8px;
+            height: 92px;
             background: var(--ios-bg);
             backdrop-filter: var(--ios-blur);
             -webkit-backdrop-filter: var(--ios-blur);
-            border-radius: 30px;
+            border-radius: 28px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 0 10px;
+            padding: 0 8px;
         }
 
-        /* THE CLASSIC APP OPEN ANIMATION */
+        /* THE "TECHTOK" GLAZED APP OPEN ANIMATION */
         .app-window {
             position: fixed;
             top: 50%;
             left: 50%;
-            width: 60px;
-            height: 60px;
+            width: 62px;
+            height: 62px;
             background: white;
             border-radius: 14px;
-            transform: translate(-50%, -50%) scale(0);
+            transform: translate(-50%, -50%) scale(0.8);
             opacity: 0;
             z-index: 3000;
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            overflow: hidden;
+            pointer-events: none;
+            transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        border-radius 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        opacity 0.2s linear;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
 
         .app-window.active {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             border-radius: 0;
             transform: translate(-50%, -50%) scale(1);
             opacity: 1;
+            pointer-events: auto;
         }
 
         .app-header {
-            height: 60px;
-            padding: 20px 20px 0;
+            height: 64px;
+            padding: 24px 20px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #f9f9f9;
-            border-bottom: 1px solid #ddd;
+            background: #f8f8f8;
+            border-bottom: 0.5px solid #b2b2b2;
         }
 
         .app-content {
@@ -159,102 +175,88 @@
             padding: 20px;
             background: white;
             color: black;
-        }
-
-        .home-indicator {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 5px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        /* Widgets Screen */
-        .widgets {
-            position: absolute;
-            left: -100%;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            transition: left 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
-            padding: 60px 20px;
-            z-index: 1000;
             overflow-y: auto;
         }
 
-        .widgets.active { left: 0; }
-
-        .widget-card {
-            background: rgba(255,255,255,0.7);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        /* Home Indicator (Added for modern utility but kept subtle) */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 5px;
+            background: rgba(0,0,0,0.15);
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 3001;
         }
 
-        /* Control Center */
+        /* Control Center - iOS 10.3 Style */
         .control-center {
             position: absolute;
-            bottom: -400px;
-            left: 8px;
-            right: 8px;
-            height: 350px;
+            bottom: -100%;
+            left: 10px;
+            right: 10px;
+            height: auto;
+            max-height: 400px;
             background: rgba(255,255,255,0.85);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
-            border-radius: 15px;
+            border-radius: 18px;
             transition: bottom 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
             z-index: 4000;
             padding: 20px;
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 -5px 40px rgba(0,0,0,0.15);
         }
 
-        .control-center.active { bottom: 8px; }
+        .control-center.active { bottom: 10px; }
 
-        /* SVG definitions for icons */
-        .svg-icon { width: 35px; height: 35px; fill: white; }
+        .svg-icon { width: 34px; height: 34px; fill: white; }
     </style>
 </head>
 <body>
 
+    <!-- iOS 10.3.4 Status Bar -->
     <div class="status-bar">
-        <span>Carrier 📶</span>
-        <span id="time">9:41 AM</span>
-        <span>100% 🔋</span>
+        <div class="flex items-center gap-1">
+            <span>●●●●○</span>
+            <span>LTE</span>
+            <span class="ml-1">🛰️</span> <!-- GPS Fixed Icon -->
+        </div>
+        <div id="time" class="absolute left-1/2 -translate-x-1/2">9:41 AM</div>
+        <div class="flex items-center gap-1">
+            <span>100%</span>
+            <div class="w-6 h-3 border border-white/50 rounded-sm relative">
+                <div class="h-full bg-white w-full"></div>
+            </div>
+        </div>
     </div>
 
     <div class="phone-wrapper" id="springboard">
-        <!-- Apps Grid -->
         <div class="app-grid">
-            <div class="app-container" onclick="openApp('Messages', 'linear-gradient(180deg, #62ef7d 0%, #4cd964 100%)')">
+            <div class="app-container" onclick="openApp('Messages', 'linear-gradient(180deg, #62ef7d 0%, #4cd964 100%)', this)">
                 <div class="icon icon-messages">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20,2H4C2.9,2,2,2.9,2,4v18l4-4h14c1.1,0,2-0.9,2-2V4C22,2.9,21.1,2,20,2z"/></svg>
                 </div>
                 <div class="icon-label">Messages</div>
             </div>
             
-            <div class="app-container" onclick="openApp('Photos', '#fff')">
+            <div class="app-container" onclick="openApp('Photos', '#fff', this)">
                 <div class="icon icon-photos">
                     <svg style="width:40px;height:40px;" viewBox="0 0 24 24"><path fill="#ff3b30" d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
                 </div>
                 <div class="icon-label">Photos</div>
             </div>
 
-            <div class="app-container" onclick="openApp('Music', 'linear-gradient(180deg, #ff5e7d 0%, #ff2d55 100%)')">
+            <div class="app-container" onclick="openApp('Music', 'linear-gradient(180deg, #ff5e7d 0%, #ff2d55 100%)', this)">
                 <div class="icon icon-music">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12,3v10.55c-0.59-0.34-1.27-0.55-2-0.55c-2.21,0-4,1.79-4,4s1.79,4,4,4s4-1.79,4-4V7h4V3H12z"/></svg>
                 </div>
                 <div class="icon-label">Music</div>
             </div>
 
-            <div class="app-container" onclick="openApp('Settings', 'linear-gradient(180deg, #e5e5ea 0%, #8e8e93 100%)')">
+            <div class="app-container" onclick="openApp('Settings', 'linear-gradient(180deg, #e5e5ea 0%, #8e8e93 100%)', this)">
                 <div class="icon icon-settings">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.81,11.69,4.81,12c0,0.31,0.02,0.65,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.5c-1.93,0-3.5-1.57-3.5-3.5 s1.57-3.5,3.5-3.5s3.5,1.57,3.5,3.5S13.93,15.5,12,15.5z"/></svg>
                 </div>
@@ -262,14 +264,13 @@
             </div>
         </div>
 
-        <!-- Dock -->
         <div class="dock">
-            <div class="app-container" onclick="openApp('Phone', 'linear-gradient(180deg, #62ef7d 0%, #4cd964 100%)')">
+            <div class="app-container" onclick="openApp('Phone', 'linear-gradient(180deg, #62ef7d 0%, #4cd964 100%)', this)">
                 <div class="icon icon-phone">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M6.62,10.79c1.44,2.83,3.76,5.14,6.59,6.59l2.2-2.2c0.27-0.27,0.67-0.36,1.02-0.24c1.12,0.37,2.33,0.57,3.57,0.57 c0.55,0,1,0.45,1,1V20c0,0.55-0.45,1-1,1C10.75,21,3,13.25,3,4c0-0.55,0.45-1,1-1h3.5c0.55,0,1,0.45,1,1c0,1.25,0.2,2.45,0.57,3.57 c0.11,0.35,0.03,0.75-0.25,1.02L6.62,10.79z"/></svg>
                 </div>
             </div>
-            <div class="app-container" onclick="openApp('Safari', '#fff')">
+            <div class="app-container" onclick="openApp('Safari', '#fff', this)">
                 <div class="icon icon-safari">
                     <svg style="width:35px;height:35px;" viewBox="0 0 24 24"><path fill="#007aff" d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/></svg>
                 </div>
@@ -279,7 +280,7 @@
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M7,14H5v5h5v-2H7V14z M5,5v5h2V7h3V5H5z M17,17h-3v2h5v-5h-2V17z M14,5v2h3v3h2V5H14z"/></svg>
                 </div>
             </div>
-            <div class="app-container" onclick="openApp('Mail', 'linear-gradient(180deg, #57d9ff 0%, #1d71f2 100%)')">
+            <div class="app-container" onclick="openApp('Mail', 'linear-gradient(180deg, #57d9ff 0%, #1d71f2 100%)', this)">
                 <div class="icon icon-mail">
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,8l-8,5L4,8V6l8,5l8-5V8z"/></svg>
                 </div>
@@ -287,134 +288,133 @@
         </div>
     </div>
 
-    <!-- Widgets Screen -->
-    <div class="widgets" id="widgets">
-        <div class="widget-card">
-            <div class="text-xs font-bold text-gray-500 mb-2 uppercase">Calendar</div>
-            <div class="text-xl">Wednesday, March 25</div>
-            <div class="text-sm text-gray-400">No events today</div>
-        </div>
-        <div class="widget-card">
-            <div class="text-xs font-bold text-gray-500 mb-2 uppercase">Weather</div>
-            <div class="flex justify-between items-center">
-                <span class="text-3xl font-light">72°</span>
-                <span class="text-3xl">☀️</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Control Center -->
-    <div class="control-center" id="cc">
-        <div class="flex justify-between mb-6">
-            <div class="w-12 h-12 bg-black/5 rounded-full flex items-center justify-center">✈️</div>
-            <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center">📶</div>
-            <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center">🌐</div>
-            <div class="w-12 h-12 bg-black/5 rounded-full flex items-center justify-center">🌙</div>
-        </div>
-        <div class="bg-black/5 h-10 rounded-xl flex items-center px-4 mb-4">
-            <span class="mr-3 text-gray-400 text-sm">🔆</span>
-            <div class="flex-1 h-1 bg-gray-300 rounded-full">
-                <div class="w-2/3 h-full bg-gray-500 rounded-full"></div>
-            </div>
-        </div>
-        <div class="flex gap-4">
-            <div class="flex-1 bg-black/5 h-20 rounded-2xl flex flex-col items-center justify-center">
-                <span class="text-xl">🔄</span>
-                <span class="text-[10px] mt-1 font-bold">AirPlay</span>
-            </div>
-            <div class="flex-1 bg-black/5 h-20 rounded-2xl flex flex-col items-center justify-center">
-                <span class="text-xl">💨</span>
-                <span class="text-[10px] mt-1 font-bold">AirDrop</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- App Window Overlay -->
+    <!-- App Window (Zoom Target) -->
     <div class="app-window" id="appWindow">
-        <div class="app-header" id="appHeader">
+        <div class="app-header">
             <span class="font-bold text-lg" id="appName">App</span>
-            <span class="text-blue-500 font-medium" onclick="closeApp()">Done</span>
+            <span class="text-blue-500 font-medium cursor-pointer" onclick="closeApp()">Done</span>
         </div>
         <div class="app-content">
-            <div class="animate-pulse space-y-4">
-                <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div class="h-4 bg-gray-200 rounded"></div>
-                <div class="h-4 bg-gray-200 rounded w-5/6"></div>
-                <div class="mt-10 p-8 border-2 border-dashed border-gray-200 rounded-2xl text-center text-gray-400">
-                    Classic iOS 10 Content Glaze
+            <div id="appBody" class="space-y-6">
+                <h2 class="text-2xl font-bold">iOS 10.3.4 (14G61)</h2>
+                <p class="text-gray-600">This update includes a fix for the GPS rollover issue that affected older iPhone and iPad models.</p>
+                <div class="p-4 bg-gray-100 rounded-xl">
+                    <p class="text-sm font-semibold text-gray-400 uppercase">Safari 10.0</p>
+                    <p class="mt-1 text-sm">WebKit Engine: 602.1.50</p>
+                </div>
+                <div class="animate-pulse space-y-4">
+                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-200 rounded"></div>
                 </div>
             </div>
         </div>
         <div class="home-indicator" onclick="closeApp()"></div>
     </div>
 
+    <!-- Control Center -->
+    <div class="control-center" id="cc">
+        <div class="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-6 opacity-50"></div>
+        <div class="grid grid-cols-4 gap-4 mb-8">
+            <div class="aspect-square bg-black/5 rounded-2xl flex items-center justify-center text-xl">✈️</div>
+            <div class="aspect-square bg-blue-500 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg">📶</div>
+            <div class="aspect-square bg-blue-500 text-white rounded-2xl flex items-center justify-center text-xl shadow-lg">🌐</div>
+            <div class="aspect-square bg-black/5 rounded-2xl flex items-center justify-center text-xl">🌙</div>
+        </div>
+        <div class="space-y-6">
+            <div class="flex items-center gap-4 bg-black/5 p-3 rounded-2xl">
+                <span class="text-gray-400">🔆</span>
+                <div class="flex-1 h-1.5 bg-gray-300 rounded-full">
+                    <div class="w-3/4 h-full bg-gray-500 rounded-full"></div>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <div class="flex-1 bg-black/5 h-20 rounded-2xl flex flex-col items-center justify-center">
+                    <span class="text-2xl">🔄</span>
+                    <span class="text-[10px] mt-2 font-bold uppercase tracking-wider text-gray-500">AirPlay</span>
+                </div>
+                <div class="flex-1 bg-black/5 h-20 rounded-2xl flex flex-col items-center justify-center">
+                    <span class="text-2xl">💨</span>
+                    <span class="text-[10px] mt-2 font-bold uppercase tracking-wider text-gray-500">AirDrop</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const springboard = document.getElementById('springboard');
         const appWindow = document.getElementById('appWindow');
         const appNameLabel = document.getElementById('appName');
-        const widgets = document.getElementById('widgets');
         const cc = document.getElementById('cc');
 
-        // APP LOGIC
-        function openApp(name, bg) {
+        let lastOpenedIconRect = null;
+
+        function openApp(name, bg, element) {
             appNameLabel.innerText = name;
-            // Set the app window starting point to help the "zoom" feel
-            appWindow.style.background = bg.includes('gradient') ? '#fff' : bg;
+            
+            // Get icon position for the glazed "from-icon" zoom effect
+            const icon = element.querySelector('.icon');
+            const rect = icon.getBoundingClientRect();
+            lastOpenedIconRect = rect;
+
+            // Start position: exactly where the icon is
+            appWindow.style.transition = 'none';
+            appWindow.style.top = `${rect.top + rect.height/2}px`;
+            appWindow.style.left = `${rect.left + rect.width/2}px`;
+            appWindow.style.width = `${rect.width}px`;
+            appWindow.style.height = `${rect.height}px`;
+            appWindow.style.borderRadius = '14px';
+            appWindow.style.opacity = '0.5';
+
+            // Trigger reflow
+            appWindow.offsetHeight;
+
+            // Animate to full screen
+            appWindow.style.transition = ''; // Restore CSS transition
+            appWindow.classList.add('active');
+            appWindow.style.top = '50%';
+            appWindow.style.left = '50%';
+            appWindow.style.width = '100%';
+            appWindow.style.height = '100%';
+            appWindow.style.borderRadius = '0';
+            appWindow.style.opacity = '1';
             
             springboard.classList.add('app-open');
-            appWindow.classList.add('active');
         }
 
         function closeApp() {
-            springboard.classList.remove('app-open');
+            if (lastOpenedIconRect) {
+                // Reverse animation back to the icon
+                appWindow.style.top = `${lastOpenedIconRect.top + lastOpenedIconRect.height/2}px`;
+                appWindow.style.left = `${lastOpenedIconRect.left + lastOpenedIconRect.width/2}px`;
+                appWindow.style.width = `${lastOpenedIconRect.width}px`;
+                appWindow.style.height = `${lastOpenedIconRect.height}px`;
+                appWindow.style.borderRadius = '14px';
+                appWindow.style.opacity = '0';
+            }
+            
             appWindow.classList.remove('active');
+            springboard.classList.remove('app-open');
         }
 
-        // FULLSCREEN TOGGLE
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                    console.log(`Fullscreen error: ${err.message}`);
                 });
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        // SWIPE LOGIC
-        let touchStartX = 0;
-        let touchStartY = 0;
-
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        });
-
+        // Swipe Gesture Handling
+        let startY = 0;
+        document.addEventListener('touchstart', e => startY = e.touches[0].clientY);
         document.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-
-            // Swipe Right (Widgets)
-            if (touchEndX > touchStartX + 100 && Math.abs(touchEndY - touchStartY) < 50) {
-                widgets.classList.add('active');
-            }
-            // Swipe Left (Back to Springboard)
-            if (touchEndX < touchStartX - 100 && Math.abs(touchEndY - touchStartY) < 50) {
-                widgets.classList.remove('active');
-            }
-            // Swipe Up (Control Center)
-            if (touchEndY < touchStartY - 100 && Math.abs(touchEndX - touchStartX) < 50) {
-                cc.classList.add('active');
-            }
-            // Swipe Down (Close CC)
-            if (touchEndY > touchStartY + 100 && Math.abs(touchEndX - touchStartX) < 50) {
-                cc.classList.remove('active');
-            }
+            const endY = e.changedTouches[0].clientY;
+            if (startY - endY > 100) cc.classList.add('active');
+            if (endY - startY > 100) cc.classList.remove('active');
         });
 
-        // TIME UPDATE
         function updateTime() {
             const now = new Date();
             let hours = now.getHours();
